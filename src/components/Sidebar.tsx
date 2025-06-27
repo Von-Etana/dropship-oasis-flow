@@ -26,10 +26,14 @@ const navigation = [
   { name: 'Admin Panel', href: '/admin', icon: Shield },
 ];
 
-export const Sidebar = () => {
+interface SidebarProps {
+  onNavigate?: () => void;
+}
+
+export const Sidebar = ({ onNavigate }: SidebarProps) => {
   return (
-    <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
-      <div className="flex flex-col flex-grow bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 pt-5 pb-4 overflow-y-auto">
+    <div className="flex flex-col w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 h-full">
+      <div className="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto">
         <div className="flex items-center flex-shrink-0 px-4">
           <h1 className="text-xl font-bold text-gray-900 dark:text-white">
             GlobalDropship Pro
@@ -42,10 +46,11 @@ export const Sidebar = () => {
               <NavLink
                 key={item.name}
                 to={item.href}
+                onClick={onNavigate}
                 className={({ isActive }) =>
                   cn(
                     isActive
-                      ? 'bg-blue-50 dark:bg-blue-900 border-r-2 border-blue-500 text-blue-700 dark:text-blue-200'
+                      ? 'bg-blue-50 dark:bg-blue-900/50 border-r-2 border-blue-500 text-blue-700 dark:text-blue-300'
                       : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white',
                     'group flex items-center px-3 py-2 text-sm font-medium rounded-l-md transition-colors'
                   )
