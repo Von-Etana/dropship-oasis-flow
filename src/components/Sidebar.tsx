@@ -1,82 +1,64 @@
 
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import { 
-  Home, 
-  Package, 
-  ShoppingCart, 
-  BarChart3, 
-  Store, 
-  Settings, 
-  HelpCircle,
-  Truck,
-  Download
-} from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { 
+  LayoutDashboard, 
+  Download, 
+  ShoppingCart, 
+  Truck, 
+  BarChart3, 
+  Store,
+  Settings,
+  Shield,
+  Home
+} from 'lucide-react';
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: Home },
+  { name: 'Homepage', href: '/', icon: Home },
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Product Import', href: '/import', icon: Download },
-  { name: 'Products', href: '/products', icon: Package },
   { name: 'Orders', href: '/orders', icon: ShoppingCart },
   { name: 'Fulfillment', href: '/fulfillment', icon: Truck },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
   { name: 'Stores', href: '/stores', icon: Store },
   { name: 'Settings', href: '/settings', icon: Settings },
-  { name: 'Help', href: '/help', icon: HelpCircle },
+  { name: 'Admin Panel', href: '/admin', icon: Shield },
 ];
 
 export const Sidebar = () => {
-  const location = useLocation();
-
   return (
-    <div className="flex h-full w-64 flex-col bg-white border-r border-gray-200">
-      <div className="flex h-16 items-center px-6 border-b border-gray-200">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-            <Package className="w-5 h-5 text-white" />
-          </div>
-          <span className="text-xl font-semibold text-gray-900">GlobalDropship</span>
+    <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
+      <div className="flex flex-col flex-grow bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 pt-5 pb-4 overflow-y-auto">
+        <div className="flex items-center flex-shrink-0 px-4">
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+            GlobalDropship Pro
+          </h1>
         </div>
-      </div>
-      
-      <nav className="flex-1 space-y-1 px-4 py-6">
-        {navigation.map((item) => {
-          const isActive = location.pathname === item.href;
-          return (
-            <NavLink
-              key={item.name}
-              to={item.href}
-              className={cn(
-                "group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors",
-                isActive
-                  ? "bg-blue-50 text-blue-700 border-r-2 border-blue-500"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-              )}
-            >
-              <item.icon
-                className={cn(
-                  "mr-3 h-5 w-5 flex-shrink-0",
-                  isActive ? "text-blue-700" : "text-gray-400 group-hover:text-gray-500"
-                )}
-              />
-              {item.name}
-            </NavLink>
-          );
-        })}
-      </nav>
-      
-      <div className="p-4 border-t border-gray-200">
-        <div className="bg-green-50 p-3 rounded-lg">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-green-800">Pro Plan</p>
-              <p className="text-xs text-green-600">3 stores connected</p>
-            </div>
-          </div>
+        
+        <div className="mt-8 flex-grow flex flex-col">
+          <nav className="flex-1 px-2 space-y-1">
+            {navigation.map((item) => (
+              <NavLink
+                key={item.name}
+                to={item.href}
+                className={({ isActive }) =>
+                  cn(
+                    isActive
+                      ? 'bg-blue-50 dark:bg-blue-900 border-r-2 border-blue-500 text-blue-700 dark:text-blue-200'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white',
+                    'group flex items-center px-3 py-2 text-sm font-medium rounded-l-md transition-colors'
+                  )
+                }
+              >
+                <item.icon
+                  className="mr-3 flex-shrink-0 h-5 w-5"
+                  aria-hidden="true"
+                />
+                {item.name}
+              </NavLink>
+            ))}
+          </nav>
         </div>
       </div>
     </div>
