@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { 
   Download, 
   Link, 
@@ -13,9 +14,11 @@ import {
   Package, 
   Search,
   Filter,
-  CheckCircle
+  CheckCircle,
+  MessageSquare
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { ReviewsImportCard } from '@/components/reviews/ReviewsImportCard';
 
 const ProductImport = () => {
   const [importMethod, setImportMethod] = useState('single');
@@ -23,6 +26,7 @@ const ProductImport = () => {
   const [productUrl, setProductUrl] = useState('');
   const [bulkUrls, setBulkUrls] = useState('');
   const [isImporting, setIsImporting] = useState(false);
+  const [importReviews, setImportReviews] = useState(true);
   const { toast } = useToast();
 
   const suppliers = [
@@ -66,9 +70,10 @@ const ProductImport = () => {
     // Simulate import process
     setTimeout(() => {
       setIsImporting(false);
+      const reviewsText = importReviews ? ' with reviews' : '';
       toast({
         title: "Import Successful",
-        description: `Successfully imported ${importMethod === 'bulk' ? bulkUrls.split('\n').length : 1} product(s) from ${suppliers.find(s => s.id === supplier)?.name}.`,
+        description: `Successfully imported ${importMethod === 'bulk' ? bulkUrls.split('\n').length : 1} product(s)${reviewsText} from ${suppliers.find(s => s.id === supplier)?.name}.`,
       });
     }, 3000);
   };
@@ -192,6 +197,21 @@ const ProductImport = () => {
                 </div>
               )}
 
+              {/* Reviews Import Toggle */}
+              <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <MessageSquare className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <div className="font-medium text-blue-900">Import Product Reviews</div>
+                    <div className="text-sm text-blue-700">Include customer reviews and ratings</div>
+                  </div>
+                </div>
+                <Switch 
+                  checked={importReviews}
+                  onCheckedChange={setImportReviews}
+                />
+              </div>
+
               <Button 
                 onClick={handleImport} 
                 disabled={isImporting}
@@ -205,12 +225,21 @@ const ProductImport = () => {
                 ) : (
                   <>
                     <Download className="w-4 h-4 mr-2" />
-                    Start Import
+                    Start Import{importReviews ? ' with Reviews' : ''}
                   </>
                 )}
               </Button>
             </CardContent>
           </Card>
+
+          {/* Reviews Preview for Single Product */}
+          {importMethod === 'single' && productUrl && supplier && importReviews && (
+            <ReviewsImportCard 
+              productUrl={productUrl}
+              supplier={supplier}
+              storeType="shopify"
+            />
+          )}
         </div>
 
         {/* Import Settings & Stats */}
@@ -255,6 +284,36 @@ const ProductImport = () => {
                   </SelectContent>
                 </Select>
               </div>
+
+              {importReviews && (
+                <div className="border-t pt-4">
+                  <h4 className="font-medium text-gray-700 mb-3">Review Settings</h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Filter low ratings</span>
+                      <Switch defaultChecked />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Translate reviews</span>
+                      <Switch />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm text-gray-600">Min rating to import</label>
+                      <Select defaultValue="3">
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">1+ stars</SelectItem>
+                          <SelectItem value="2">2+ stars</SelectItem>
+                          <SelectItem value="3">3+ stars</SelectItem>
+                          <SelectItem value="4">4+ stars</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -275,6 +334,14 @@ const ProductImport = () => {
                     <span className={`font-semibold ${stat.color}`}>{stat.value}</span>
                   </div>
                 ))}
+                {importReviews && (
+                  <div className="border-t pt-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Reviews Imported</span>
+                      <span className="font-semibold text-orange-600">1,247</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -289,9 +356,9 @@ const ProductImport = () => {
         <CardContent>
           <div className="space-y-3">
             {[
-              { product: 'Wireless Bluetooth Earbuds', supplier: 'AliExpress', status: 'completed', time: '2 minutes ago' },
-              { product: 'LED Strip Lights RGB', supplier: 'CJDropshipping', status: 'processing', time: '5 minutes ago' },
-              { product: 'Phone Case Clear TPU', supplier: 'Banggood', status: 'completed', time: '8 minutes ago' },
+              { product: 'Wireless Bluetooth Earbuds', supplier: 'AliExpress', status: 'completed', time: '2 minutes ago', reviews: 47 },
+              { product: 'LED Strip Lights RGB', supplier: 'CJDropshipping', status: 'processing', time: '5 minutes ago', reviews: 23 },
+              { product: 'Phone Case Clear TPU', supplier: 'Banggood', status: 'completed', time: '8 minutes ago', reviews: 15 },
             ].map((item, index) => (
               <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div className="flex items-center space-x-3">
@@ -300,7 +367,18 @@ const ProductImport = () => {
                   }`}></div>
                   <div>
                     <div className="font-medium text-gray-900">{item.product}</div>
-                    <div className="text-sm text-gray-600">from {item.supplier}</div>
+                    <div className="text-sm text-gray-600 flex items-center space-x-2">
+                      <span>from {item.supplier}</span>
+                      {importReviews && item.reviews && (
+                        <>
+                          <span>•</span>
+                          <span className="flex items-center">
+                            <MessageSquare className="w-3 h-3 mr-1" />
+                            {item.reviews} reviews
+                          </span>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="text-right">

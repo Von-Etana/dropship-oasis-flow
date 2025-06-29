@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
 import { 
   Download, 
   Settings, 
@@ -12,7 +13,9 @@ import {
   DollarSign,
   Image,
   CheckCircle,
-  Globe
+  Globe,
+  Star,
+  MessageSquare
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -23,7 +26,8 @@ export const ChromeExtensionDemo = () => {
     store: 'shopify',
     category: 'electronics',
     autofill: true,
-    removeWatermarks: true
+    removeWatermarks: true,
+    importReviews: true
   });
   const { toast } = useToast();
 
@@ -33,9 +37,20 @@ export const ChromeExtensionDemo = () => {
       setIsImporting(false);
       toast({
         title: "Product Imported",
-        description: "Successfully imported Wireless Bluetooth Earbuds to your store.",
+        description: `Successfully imported Wireless Bluetooth Earbuds${autoSettings.importReviews ? ' with 47 reviews' : ''} to your store.`,
       });
     }, 2000);
+  };
+
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, index) => (
+      <Star
+        key={index}
+        className={`w-3 h-3 ${
+          index < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+        }`}
+      />
+    ));
   };
 
   return (
@@ -73,6 +88,12 @@ export const ChromeExtensionDemo = () => {
               <div>
                 <h3 className="font-medium text-gray-900 text-sm">Wireless Bluetooth Earbuds</h3>
                 <p className="text-xs text-gray-600">AliExpress • $12.99</p>
+                <div className="flex items-center space-x-2 mt-1">
+                  <div className="flex items-center">
+                    {renderStars(4)}
+                  </div>
+                  <span className="text-xs text-gray-500">4.3 (47 reviews)</span>
+                </div>
               </div>
             </div>
           </CardContent>
@@ -122,6 +143,35 @@ export const ChromeExtensionDemo = () => {
               onCheckedChange={(checked) => setAutoSettings({...autoSettings, removeWatermarks: checked})}
             />
           </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <MessageSquare className="w-4 h-4 text-gray-600" />
+              <span className="text-sm text-gray-700">Import reviews</span>
+            </div>
+            <Switch 
+              checked={autoSettings.importReviews}
+              onCheckedChange={(checked) => setAutoSettings({...autoSettings, importReviews: checked})}
+            />
+          </div>
+
+          {autoSettings.importReviews && (
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <div className="flex items-center space-x-2 mb-2">
+                <MessageSquare className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-900">Reviews Preview</span>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-blue-700">47 reviews found</span>
+                  <Badge variant="secondary" className="text-xs">4.3 ★</Badge>
+                </div>
+                <div className="text-xs text-blue-600">
+                  "Great quality, fast shipping!" - John D. ⭐⭐⭐⭐⭐
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Import Button */}
@@ -138,7 +188,7 @@ export const ChromeExtensionDemo = () => {
           ) : (
             <>
               <Download className="w-4 h-4 mr-2" />
-              Import Product
+              Import Product{autoSettings.importReviews ? ' + Reviews' : ''}
             </>
           )}
         </Button>
