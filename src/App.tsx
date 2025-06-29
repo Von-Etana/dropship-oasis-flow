@@ -18,6 +18,7 @@ import Analytics from "./pages/Analytics";
 import Stores from "./pages/Stores";
 import Settings from "./pages/Settings";
 import AdminPanel from "./pages/AdminPanel";
+import StoreBuilder from "./pages/StoreBuilder";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/fulfillment" element={<Layout><Fulfillment /></Layout>} />
             <Route path="/analytics" element={<Layout><Analytics /></Layout>} />
             <Route path="/stores" element={<Layout><Stores /></Layout>} />
+            <Route path="/store-builder" element={<Layout><StoreBuilder /></Layout>} />
             <Route path="/settings" element={<Layout><Settings /></Layout>} />
             <Route path="/admin" element={<Layout><AdminPanel /></Layout>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

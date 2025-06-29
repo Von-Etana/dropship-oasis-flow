@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, ArrowRight } from 'lucide-react';
+import { Search, ArrowRight, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const HeroSection = () => {
@@ -13,10 +13,10 @@ export const HeroSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-            Automate Your <span className="text-blue-600">Dropshipping</span> Business
+            Build & Automate Your <span className="text-blue-600">Dropshipping</span> Empire
           </h1>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8">
-            Import products from Alibaba, automate order fulfillment, and scale your e-commerce business with our all-in-one platform.
+            Create AI-powered stores, import products from Alibaba, automate order fulfillment, and scale your e-commerce business with custom domains and professional designs.
           </p>
           
           {/* Search Bar */}
@@ -39,7 +39,13 @@ export const HeroSection = () => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <Link to="/store-builder">
+              <Button size="lg" className="h-12 px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                <Zap className="w-5 h-5 mr-2" />
+                Build AI Store
+              </Button>
+            </Link>
             <Link to="/dashboard">
               <Button size="lg" className="h-12 px-8">
                 Start Free Trial
@@ -49,6 +55,23 @@ export const HeroSection = () => {
             <Button variant="outline" size="lg" className="h-12 px-8">
               Watch Demo
             </Button>
+          </div>
+
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur rounded-lg p-4 max-w-2xl mx-auto">
+            <div className="flex items-center justify-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
+              <div className="flex items-center">
+                <Zap className="w-4 h-4 mr-1 text-blue-500" />
+                AI Store Builder
+              </div>
+              <div className="flex items-center">
+                <Search className="w-4 h-4 mr-1 text-green-500" />
+                Auto Product Import
+              </div>
+              <div className="flex items-center">
+                <ArrowRight className="w-4 h-4 mr-1 text-purple-500" />
+                Custom Domains
+              </div>
+            </div>
           </div>
         </div>
       </div>
