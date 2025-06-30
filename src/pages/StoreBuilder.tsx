@@ -69,18 +69,20 @@ const StoreBuilder = () => {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
-    if (file && file.type === 'application/pdf') {
+    if (file && (file.type === 'application/pdf' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.type === 'application/msword')) {
       setCompanyProfile(file);
       toast.success('Company profile uploaded successfully!');
     } else {
-      toast.error('Please upload a PDF file');
+      toast.error('Please upload a PDF or DOC file');
     }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'application/pdf': ['.pdf']
+      'application/pdf': ['.pdf'],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+      'application/msword': ['.doc']
     },
     maxFiles: 1
   });
@@ -121,6 +123,20 @@ const StoreBuilder = () => {
         toast.info(steps[i]);
       }
 
+      // Prepare settings data - convert to plain object for JSON serialization
+      const settingsData = {
+        sections: storeSections.map(section => ({
+          id: section.id,
+          type: section.type,
+          title: section.title,
+          enabled: section.enabled,
+          order: section.order
+        })),
+        template: storeData.template,
+        colorTheme: storeData.colorTheme,
+        font: storeData.font
+      };
+
       // Create store in database
       const { data: store, error } = await supabase
         .from('stores')
@@ -133,10 +149,7 @@ const StoreBuilder = () => {
           secondary_color: storeData.colorTheme.secondary,
           font_family: storeData.font,
           status: 'draft',
-          settings: {
-            sections: storeSections,
-            template: storeData.template
-          }
+          settings: settingsData
         })
         .select()
         .single();
@@ -218,7 +231,7 @@ const StoreBuilder = () => {
                           Drop your company profile here
                         </p>
                         <p className="text-sm text-gray-500">
-                          PDF format • Used by AI to build your store
+                          PDF, DOC, or DOCX format • Used by AI to build your store
                         </p>
                       </div>
                     )}
