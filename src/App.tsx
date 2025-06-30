@@ -12,6 +12,7 @@ import Pricing from "./pages/Pricing";
 import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
 import ProductImport from "./pages/ProductImport";
+import Products from "./pages/Products";
 import Orders from "./pages/Orders";
 import Fulfillment from "./pages/Fulfillment";
 import Analytics from "./pages/Analytics";
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
             <Route path="/import" element={<Layout><ProductImport /></Layout>} />
+            <Route path="/products" element={<Layout><Products /></Layout>} />
             <Route path="/orders" element={<Layout><Orders /></Layout>} />
             <Route path="/fulfillment" element={<Layout><Fulfillment /></Layout>} />
             <Route path="/analytics" element={<Layout><Analytics /></Layout>} />

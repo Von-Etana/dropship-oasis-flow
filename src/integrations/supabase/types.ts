@@ -9,7 +9,288 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      file_uploads: {
+        Row: {
+          created_at: string | null
+          file_path: string
+          file_size: number | null
+          file_type: string
+          filename: string
+          id: string
+          metadata: Json | null
+          store_id: string | null
+          upload_type: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          file_path: string
+          file_size?: number | null
+          file_type: string
+          filename: string
+          id?: string
+          metadata?: Json | null
+          store_id?: string | null
+          upload_type: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          file_path?: string
+          file_size?: number | null
+          file_type?: string
+          filename?: string
+          id?: string
+          metadata?: Json | null
+          store_id?: string | null
+          upload_type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "file_uploads_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          billing_address: Json | null
+          created_at: string | null
+          currency: string | null
+          customer_email: string
+          customer_name: string | null
+          customer_phone: string | null
+          fulfillment_status: string | null
+          id: string
+          line_items: Json
+          notes: string | null
+          payment_status: string | null
+          shipping_address: Json | null
+          shipping_amount: number | null
+          store_id: string | null
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          subtotal: number
+          tax_amount: number | null
+          total_amount: number
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          billing_address?: Json | null
+          created_at?: string | null
+          currency?: string | null
+          customer_email: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          fulfillment_status?: string | null
+          id?: string
+          line_items: Json
+          notes?: string | null
+          payment_status?: string | null
+          shipping_address?: Json | null
+          shipping_amount?: number | null
+          store_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          subtotal: number
+          tax_amount?: number | null
+          total_amount: number
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          billing_address?: Json | null
+          created_at?: string | null
+          currency?: string | null
+          customer_email?: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          fulfillment_status?: string | null
+          id?: string
+          line_items?: Json
+          notes?: string | null
+          payment_status?: string | null
+          shipping_address?: Json | null
+          shipping_amount?: number | null
+          store_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          subtotal?: number
+          tax_amount?: number | null
+          total_amount?: number
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          barcode: string | null
+          category: string | null
+          compare_at_price: number | null
+          created_at: string | null
+          description: string | null
+          dimensions: Json | null
+          id: string
+          images: Json | null
+          inventory_quantity: number | null
+          price: number | null
+          rating: number | null
+          review_count: number | null
+          reviews: Json | null
+          seo_description: string | null
+          seo_title: string | null
+          shipping_info: Json | null
+          sku: string | null
+          status: string | null
+          store_id: string | null
+          supplier_name: string | null
+          supplier_url: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+          user_id: string | null
+          variants: Json | null
+          weight: number | null
+        }
+        Insert: {
+          barcode?: string | null
+          category?: string | null
+          compare_at_price?: number | null
+          created_at?: string | null
+          description?: string | null
+          dimensions?: Json | null
+          id?: string
+          images?: Json | null
+          inventory_quantity?: number | null
+          price?: number | null
+          rating?: number | null
+          review_count?: number | null
+          reviews?: Json | null
+          seo_description?: string | null
+          seo_title?: string | null
+          shipping_info?: Json | null
+          sku?: string | null
+          status?: string | null
+          store_id?: string | null
+          supplier_name?: string | null
+          supplier_url?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+          user_id?: string | null
+          variants?: Json | null
+          weight?: number | null
+        }
+        Update: {
+          barcode?: string | null
+          category?: string | null
+          compare_at_price?: number | null
+          created_at?: string | null
+          description?: string | null
+          dimensions?: Json | null
+          id?: string
+          images?: Json | null
+          inventory_quantity?: number | null
+          price?: number | null
+          rating?: number | null
+          review_count?: number | null
+          reviews?: Json | null
+          seo_description?: string | null
+          seo_title?: string | null
+          shipping_info?: Json | null
+          sku?: string | null
+          status?: string | null
+          store_id?: string | null
+          supplier_name?: string | null
+          supplier_url?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string | null
+          variants?: Json | null
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stores: {
+        Row: {
+          company_profile: Json | null
+          created_at: string | null
+          description: string | null
+          domain: string | null
+          font_family: string | null
+          id: string
+          logo_url: string | null
+          name: string
+          primary_color: string | null
+          secondary_color: string | null
+          settings: Json | null
+          status: string | null
+          subdomain: string | null
+          template_id: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          company_profile?: Json | null
+          created_at?: string | null
+          description?: string | null
+          domain?: string | null
+          font_family?: string | null
+          id?: string
+          logo_url?: string | null
+          name: string
+          primary_color?: string | null
+          secondary_color?: string | null
+          settings?: Json | null
+          status?: string | null
+          subdomain?: string | null
+          template_id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          company_profile?: Json | null
+          created_at?: string | null
+          description?: string | null
+          domain?: string | null
+          font_family?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+          primary_color?: string | null
+          secondary_color?: string | null
+          settings?: Json | null
+          status?: string | null
+          subdomain?: string | null
+          template_id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
