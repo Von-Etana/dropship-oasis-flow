@@ -11,12 +11,14 @@ import {
   Store,
   Settings,
   Shield,
-  Home
+  Home,
+  Package
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Homepage', href: '/', icon: Home },
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Products', href: '/products', icon: Package },
   { name: 'Product Import', href: '/import', icon: Download },
   { name: 'Orders', href: '/orders', icon: ShoppingCart },
   { name: 'Fulfillment', href: '/fulfillment', icon: Truck },
