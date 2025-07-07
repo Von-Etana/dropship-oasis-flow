@@ -15,6 +15,8 @@ interface ProductsFiltersProps {
   onSearchChange: (value: string) => void;
   statusFilter: string;
   onStatusFilterChange: (value: string) => void;
+  categoryFilter: string;
+  onCategoryFilterChange: (value: string) => void;
 }
 
 export const ProductsFilters = ({
@@ -22,6 +24,8 @@ export const ProductsFilters = ({
   onSearchChange,
   statusFilter,
   onStatusFilterChange,
+  categoryFilter,
+  onCategoryFilterChange,
 }: ProductsFiltersProps) => {
   return (
     <div className="flex items-center gap-4">
@@ -47,6 +51,20 @@ export const ProductsFilters = ({
           <DropdownMenuItem onClick={() => onStatusFilterChange('active')}>Active</DropdownMenuItem>
           <DropdownMenuItem onClick={() => onStatusFilterChange('draft')}>Draft</DropdownMenuItem>
           <DropdownMenuItem onClick={() => onStatusFilterChange('archived')}>Archived</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" className="flex items-center gap-2">
+            Category: {categoryFilter === 'all' ? 'All' : categoryFilter}
+            <ChevronDown className="w-4 h-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => onCategoryFilterChange('all')}>All</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onCategoryFilterChange('Electronics')}>Electronics</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onCategoryFilterChange('Home & Office')}>Home & Office</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
