@@ -14,8 +14,7 @@ import {
   AlertCircle, 
   Plus,
   RefreshCw,
-  ExternalLink,
-  Sync
+  ExternalLink
 } from 'lucide-react';
 
 const PlatformIntegrations = () => {
@@ -246,7 +245,7 @@ const PlatformIntegrations = () => {
                         Configure
                       </Button>
                       <Button variant="outline" size="sm">
-                        <Sync className="w-4 h-4 mr-2" />
+                        <RefreshCw className="w-4 h-4 mr-2" />
                         Sync Now
                       </Button>
                       <Button variant="outline" size="sm">
