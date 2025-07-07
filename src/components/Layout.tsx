@@ -33,7 +33,7 @@ export const Layout = ({ children }: LayoutProps) => {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="p-0 w-64">
-            <Sidebar onNavigate={() => setMobileMenuOpen(false)} />
+            <Sidebar />
           </SheetContent>
         </Sheet>
       )}
