@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Globe, Eye, Download, Share2 } from 'lucide-react';
+import { Globe, Eye, Download, Share2, Facebook, Instagram, Twitter, Linkedin, Mail, Phone } from 'lucide-react';
 
 interface StorePreviewProps {
   storeData: any;
@@ -63,8 +63,12 @@ export const StorePreview = ({ storeData, sections }: StorePreviewProps) => {
                 <div key={section.id} className="p-8">
                   {section.type === 'hero' && (
                     <div className="text-center text-white">
-                      <h1 className="text-5xl font-bold mb-4">{storeData.name}</h1>
-                      <p className="text-xl mb-8">{storeData.description}</p>
+                      <h1 className="text-5xl font-bold mb-4">
+                        {storeData.heroTitle || storeData.name}
+                      </h1>
+                      <p className="text-xl mb-8">
+                        {storeData.heroSubtitle || storeData.description}
+                      </p>
                       <Button size="lg" variant="secondary">
                         Shop Now
                       </Button>
@@ -93,8 +97,9 @@ export const StorePreview = ({ storeData, sections }: StorePreviewProps) => {
                     <div className="bg-white rounded-lg p-6 mt-8">
                       <h2 className="text-3xl font-bold text-center mb-8">About Us</h2>
                       <p className="text-gray-600 text-center max-w-2xl mx-auto">
-                        We are passionate about providing high-quality products that make a difference in your life. 
-                        Our commitment to excellence drives everything we do.
+                        {storeData.aboutContent || 
+                        "We are passionate about providing high-quality products that make a difference in your life. Our commitment to excellence drives everything we do."
+                        }
                       </p>
                     </div>
                   )}
@@ -121,9 +126,69 @@ export const StorePreview = ({ storeData, sections }: StorePreviewProps) => {
                   {section.type === 'contact' && (
                     <div className="bg-white rounded-lg p-6 mt-8">
                       <h2 className="text-3xl font-bold text-center mb-8">Get in Touch</h2>
-                      <div className="text-center">
-                        <p className="text-gray-600">Email: hello@{storeData.subdomain || 'mystore'}.com</p>
-                        <p className="text-gray-600">Phone: (555) 123-4567</p>
+                      <div className="text-center mb-6">
+                        {storeData.socialMedia?.email && (
+                          <div className="flex items-center justify-center mb-2">
+                            <Mail className="w-4 h-4 mr-2" />
+                            <span>{storeData.socialMedia.email}</span>
+                          </div>
+                        )}
+                        {storeData.socialMedia?.phone && (
+                          <div className="flex items-center justify-center mb-4">
+                            <Phone className="w-4 h-4 mr-2" />
+                            <span>{storeData.socialMedia.phone}</span>
+                          </div>
+                        )}
+                        {!storeData.socialMedia?.email && !storeData.socialMedia?.phone && (
+                          <>
+                            <p className="text-gray-600">Email: hello@{storeData.subdomain || 'mystore'}.com</p>
+                            <p className="text-gray-600">Phone: (555) 123-4567</p>
+                          </>
+                        )}
+                      </div>
+                      
+                      {/* Social Media Links */}
+                      <div className="flex justify-center space-x-4">
+                        {storeData.socialMedia?.facebook && (
+                          <a 
+                            href={storeData.socialMedia.facebook} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+                          >
+                            <Facebook className="w-5 h-5" />
+                          </a>
+                        )}
+                        {storeData.socialMedia?.instagram && (
+                          <a 
+                            href={storeData.socialMedia.instagram} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:from-purple-600 hover:to-pink-600 transition-colors"
+                          >
+                            <Instagram className="w-5 h-5" />
+                          </a>
+                        )}
+                        {storeData.socialMedia?.twitter && (
+                          <a 
+                            href={storeData.socialMedia.twitter} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="p-2 bg-blue-400 text-white rounded-full hover:bg-blue-500 transition-colors"
+                          >
+                            <Twitter className="w-5 h-5" />
+                          </a>
+                        )}
+                        {storeData.socialMedia?.linkedin && (
+                          <a 
+                            href={storeData.socialMedia.linkedin} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="p-2 bg-blue-700 text-white rounded-full hover:bg-blue-800 transition-colors"
+                          >
+                            <Linkedin className="w-5 h-5" />
+                          </a>
+                        )}
                       </div>
                     </div>
                   )}

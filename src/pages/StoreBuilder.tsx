@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,7 +25,9 @@ import {
   Download,
   Plus,
   Trash2,
-  GripVertical
+  GripVertical,
+  Image,
+  Edit3
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -44,6 +45,8 @@ const StoreBuilder = () => {
   const [buildingProgress, setBuildingProgress] = useState(0);
   const [isBuilding, setIsBuilding] = useState(false);
   const [companyProfile, setCompanyProfile] = useState<File | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [storeData, setStoreData] = useState({
     name: '',
     description: '',
@@ -56,7 +59,21 @@ const StoreBuilder = () => {
       accent: '#10b981'
     },
     font: 'Inter',
-    template: 'modern'
+    template: 'modern',
+    // Content fields
+    heroTitle: '',
+    heroSubtitle: '',
+    aboutContent: '',
+    // Social media handles
+    socialMedia: {
+      facebook: '',
+      instagram: '',
+      twitter: '',
+      linkedin: '',
+      youtube: '',
+      email: '',
+      phone: ''
+    }
   });
 
   const [storeSections, setStoreSections] = useState<StoreSection[]>([
@@ -77,12 +94,35 @@ const StoreBuilder = () => {
     }
   }, []);
 
+  const onLogoUpload = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    if (file && file.type.startsWith('image/')) {
+      setLogoFile(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setLogoPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+      toast.success('Logo uploaded successfully!');
+    } else {
+      toast.error('Please upload an image file');
+    }
+  }, []);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
       'application/pdf': ['.pdf'],
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
       'application/msword': ['.doc']
+    },
+    maxFiles: 1
+  });
+
+  const { getRootProps: getLogoRootProps, getInputProps: getLogoInputProps, isDragActive: isLogoDragActive } = useDropzone({
+    onDrop: onLogoUpload,
+    accept: {
+      'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.svg']
     },
     maxFiles: 1
   });
@@ -134,7 +174,13 @@ const StoreBuilder = () => {
         })),
         template: storeData.template,
         colorTheme: storeData.colorTheme,
-        font: storeData.font
+        font: storeData.font,
+        content: {
+          heroTitle: storeData.heroTitle,
+          heroSubtitle: storeData.heroSubtitle,
+          aboutContent: storeData.aboutContent
+        },
+        socialMedia: storeData.socialMedia
       };
 
       // Create store in database
@@ -179,10 +225,14 @@ const StoreBuilder = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="setup" className="flex items-center">
               <Zap className="w-4 h-4 mr-2" />
               Setup
+            </TabsTrigger>
+            <TabsTrigger value="content" className="flex items-center">
+              <Edit3 className="w-4 h-4 mr-2" />
+              Content
             </TabsTrigger>
             <TabsTrigger value="design" className="flex items-center">
               <Palette className="w-4 h-4 mr-2" />
@@ -293,6 +343,37 @@ const StoreBuilder = () => {
               </Card>
             </div>
 
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Image className="w-5 h-5 mr-2" />
+                  Store Logo
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div
+                    {...getLogoRootProps()}
+                    className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+                      isLogoDragActive
+                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    <input {...getLogoInputProps()} />
+                    <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                    <p className="text-sm text-gray-600">Drop your logo here or click to browse</p>
+                    <p className="text-xs text-gray-500">PNG, JPG, SVG up to 2MB</p>
+                  </div>
+                  {logoPreview && (
+                    <div className="flex items-center justify-center border-2 rounded-lg p-4">
+                      <img src={logoPreview} alt="Logo preview" className="max-h-24 max-w-full object-contain" />
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
             {isBuilding && (
               <Card>
                 <CardContent className="p-6">
@@ -319,6 +400,136 @@ const StoreBuilder = () => {
                 {isBuilding ? 'Building...' : 'Build Store with AI'}
               </Button>
             </div>
+          </TabsContent>
+
+          <TabsContent value="content" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Hero Section Content</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="hero-title">Hero Title</Label>
+                    <Input
+                      id="hero-title"
+                      value={storeData.heroTitle}
+                      onChange={(e) => setStoreData({...storeData, heroTitle: e.target.value})}
+                      placeholder="Welcome to Our Amazing Store"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="hero-subtitle">Hero Subtitle</Label>
+                    <Textarea
+                      id="hero-subtitle"
+                      value={storeData.heroSubtitle}
+                      onChange={(e) => setStoreData({...storeData, heroSubtitle: e.target.value})}
+                      placeholder="Discover amazing products that will change your life..."
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>About Us Content</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div>
+                    <Label htmlFor="about-content">About Content</Label>
+                    <Textarea
+                      id="about-content"
+                      value={storeData.aboutContent}
+                      onChange={(e) => setStoreData({...storeData, aboutContent: e.target.value})}
+                      placeholder="Tell your story, share your mission, and connect with your customers..."
+                      className="h-32"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Social Media & Contact</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="facebook">Facebook</Label>
+                    <Input
+                      id="facebook"
+                      value={storeData.socialMedia.facebook}
+                      onChange={(e) => setStoreData({
+                        ...storeData, 
+                        socialMedia: {...storeData.socialMedia, facebook: e.target.value}
+                      })}
+                      placeholder="https://facebook.com/yourstore"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="instagram">Instagram</Label>
+                    <Input
+                      id="instagram"
+                      value={storeData.socialMedia.instagram}
+                      onChange={(e) => setStoreData({
+                        ...storeData, 
+                        socialMedia: {...storeData.socialMedia, instagram: e.target.value}
+                      })}
+                      placeholder="https://instagram.com/yourstore"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="twitter">Twitter</Label>
+                    <Input
+                      id="twitter"
+                      value={storeData.socialMedia.twitter}
+                      onChange={(e) => setStoreData({
+                        ...storeData, 
+                        socialMedia: {...storeData.socialMedia, twitter: e.target.value}
+                      })}
+                      placeholder="https://twitter.com/yourstore"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="linkedin">LinkedIn</Label>
+                    <Input
+                      id="linkedin"
+                      value={storeData.socialMedia.linkedin}
+                      onChange={(e) => setStoreData({
+                        ...storeData, 
+                        socialMedia: {...storeData.socialMedia, linkedin: e.target.value}
+                      })}
+                      placeholder="https://linkedin.com/company/yourstore"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="email-contact">Email</Label>
+                    <Input
+                      id="email-contact"
+                      value={storeData.socialMedia.email}
+                      onChange={(e) => setStoreData({
+                        ...storeData, 
+                        socialMedia: {...storeData.socialMedia, email: e.target.value}
+                      })}
+                      placeholder="hello@yourstore.com"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone-contact">Phone</Label>
+                    <Input
+                      id="phone-contact"
+                      value={storeData.socialMedia.phone}
+                      onChange={(e) => setStoreData({
+                        ...storeData, 
+                        socialMedia: {...storeData.socialMedia, phone: e.target.value}
+                      })}
+                      placeholder="+1 (555) 123-4567"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="design">
