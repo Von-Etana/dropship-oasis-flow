@@ -92,7 +92,7 @@ export const MultiStoreManager: React.FC = () => {
             </div>
             {userPlan.tier === 'free' && (
               <Button size="sm" onClick={handleUpgrade}>
-                <Upgrade className="w-4 h-4 mr-2" />
+                <ArrowUp className="w-4 h-4 mr-2" />
                 Upgrade
               </Button>
             )}
@@ -230,7 +230,7 @@ export const MultiStoreManager: React.FC = () => {
                 Upgrade your plan to connect more stores
               </p>
               <Button size="sm" onClick={handleUpgrade}>
-                <Upgrade className="w-4 h-4 mr-2" />
+                <ArrowUp className="w-4 h-4 mr-2" />
                 Upgrade Plan
               </Button>
             </CardContent>
