@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -13,13 +15,19 @@ import {
   CreditCard,
   Wallet,
   Eye,
-  Download
+  Download,
+  Settings as SettingsIcon
 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import stripeLogo from '@/assets/stripe-logo.svg';
+import paystackLogo from '@/assets/paystack-logo.png';
+import flutterwaveLogo from '@/assets/flutterwave-logo.svg';
 
 const PaymentDashboard = () => {
+  const { toast } = useToast();
   const [withdrawalAmount, setWithdrawalAmount] = useState('');
   const [selectedProvider, setSelectedProvider] = useState('');
+  const [selectedProviderDetails, setSelectedProviderDetails] = useState<any>(null);
 
   const balanceData = {
     totalBalance: 25847.50,
@@ -62,37 +70,114 @@ const PaymentDashboard = () => {
     {
       id: 'stripe',
       name: 'Stripe',
-      logo: '💳',
+      logo: stripeLogo,
       available: true,
       minWithdrawal: 10,
-      processingTime: '1-2 business days'
+      processingTime: '1-2 business days',
+      fees: '2.9% + $0.30 per transaction',
+      countries: ['US', 'CA', 'UK', 'EU', 'AU']
     },
     {
       id: 'paystack',
       name: 'Paystack',
-      logo: '🏦',
+      logo: paystackLogo,
       available: true,
       minWithdrawal: 100,
-      processingTime: 'Instant to 24 hours'
+      processingTime: 'Instant to 24 hours',
+      fees: '1.5% + ₦100 per transaction',
+      countries: ['NG', 'GH', 'ZA', 'KE']
     },
     {
       id: 'flutterwave',
       name: 'Flutterwave',
-      logo: '🌍',
+      logo: flutterwaveLogo,
       available: true,
       minWithdrawal: 50,
-      processingTime: '1-3 business days'
+      processingTime: '1-3 business days',
+      fees: '1.4% per transaction',
+      countries: ['NG', 'GH', 'KE', 'UG', 'TZ', 'RW']
     }
   ];
 
   const handleWithdrawal = () => {
-    if (!withdrawalAmount || !selectedProvider) return;
+    if (!withdrawalAmount || !selectedProvider) {
+      toast({
+        title: "Error",
+        description: "Please enter an amount and select a payment provider",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const amount = parseFloat(withdrawalAmount);
+    const provider = paymentProviders.find(p => p.id === selectedProvider);
     
-    // TODO: Implement withdrawal logic
-    console.log('Processing withdrawal:', {
-      amount: withdrawalAmount,
-      provider: selectedProvider
+    if (amount < (provider?.minWithdrawal || 0)) {
+      toast({
+        title: "Error", 
+        description: `Minimum withdrawal amount for ${provider?.name} is $${provider?.minWithdrawal}`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (amount > balanceData.availableBalance) {
+      toast({
+        title: "Error",
+        description: "Insufficient available balance",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // TODO: Implement actual withdrawal API call
+    toast({
+      title: "Withdrawal Requested",
+      description: `$${amount} withdrawal request submitted to ${provider?.name}`,
     });
+    
+    setWithdrawalAmount('');
+    setSelectedProvider('');
+  };
+
+  const handleExportReport = () => {
+    const csvContent = [
+      ['Transaction ID', 'Type', 'Amount', 'Provider', 'Status', 'Date', 'Order ID'],
+      ...recentTransactions.map(tx => [
+        tx.id,
+        tx.type,
+        tx.amount,
+        tx.provider,
+        tx.status,
+        tx.date,
+        tx.orderId || 'N/A'
+      ])
+    ].map(row => row.join(',')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `payment-report-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+
+    toast({
+      title: "Report Exported",
+      description: "Payment report has been downloaded as CSV",
+    });
+  };
+
+  const handleViewDetails = (provider: any) => {
+    setSelectedProviderDetails(provider);
+  };
+
+  const handleConfigure = (providerId: string) => {
+    toast({
+      title: "Configuration",
+      description: `Opening ${providerId} configuration settings...`,
+    });
+    // TODO: Implement provider configuration
   };
 
   const getStatusColor = (status: string) => {
@@ -112,7 +197,7 @@ const PaymentDashboard = () => {
           <h1 className="text-2xl font-semibold text-gray-900">Payment Dashboard</h1>
           <p className="text-gray-600">Manage your earnings and withdrawals</p>
         </div>
-        <Button>
+        <Button onClick={handleExportReport}>
           <Download className="w-4 h-4 mr-2" />
           Export Report
         </Button>
@@ -218,7 +303,7 @@ const PaymentDashboard = () => {
                       {paymentProviders.filter(p => p.available).map((provider) => (
                         <SelectItem key={provider.id} value={provider.id}>
                           <div className="flex items-center">
-                            <span className="mr-2">{provider.logo}</span>
+                            <img src={provider.logo} alt={provider.name} className="w-5 h-5 mr-2" />
                             {provider.name}
                           </div>
                         </SelectItem>
@@ -247,7 +332,7 @@ const PaymentDashboard = () => {
                   <div key={provider.id} className="p-4 border rounded-lg">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center">
-                        <span className="text-xl mr-2">{provider.logo}</span>
+                        <img src={provider.logo} alt={provider.name} className="w-8 h-8 mr-2" />
                         <span className="font-medium">{provider.name}</span>
                       </div>
                       <Badge variant={provider.available ? "default" : "secondary"}>
@@ -315,7 +400,7 @@ const PaymentDashboard = () => {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <span className="text-2xl">{provider.logo}</span>
+                      <img src={provider.logo} alt={provider.name} className="w-12 h-12" />
                       <div>
                         <CardTitle>{provider.name}</CardTitle>
                         <p className="text-sm text-gray-600">Payment provider settings</p>
@@ -337,11 +422,42 @@ const PaymentDashboard = () => {
                       </p>
                     </div>
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
-                        <Eye className="w-4 h-4 mr-2" />
-                        View Details
-                      </Button>
-                      <Button variant="outline" size="sm">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm" onClick={() => handleViewDetails(provider)}>
+                            <Eye className="w-4 h-4 mr-2" />
+                            View Details
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-md">
+                          <DialogHeader>
+                            <DialogTitle className="flex items-center">
+                              <img src={provider.logo} alt={provider.name} className="w-6 h-6 mr-2" />
+                              {provider.name} Details
+                            </DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div>
+                              <p className="text-sm font-medium">Processing Time</p>
+                              <p className="text-sm text-gray-600">{provider.processingTime}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium">Transaction Fees</p>
+                              <p className="text-sm text-gray-600">{provider.fees}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium">Supported Countries</p>
+                              <p className="text-sm text-gray-600">{provider.countries.join(', ')}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium">Minimum Withdrawal</p>
+                              <p className="text-sm text-gray-600">${provider.minWithdrawal}</p>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                      <Button variant="outline" size="sm" onClick={() => handleConfigure(provider.id)}>
+                        <SettingsIcon className="w-4 h-4 mr-2" />
                         Configure
                       </Button>
                     </div>
