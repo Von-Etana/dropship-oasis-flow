@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropship Connector</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="icons/icon32.png" alt="Dropship Connector" class="logo">
+            <h1>Dropship Connector</h1>
+        </header>
+
+        <div id="not-connected" class="section" style="display: none;">
+            <div class="status-card error">
+                <h3>Not Connected</h3>
+                <p>Please configure your API settings first.</p>
+                <button id="open-settings" class="btn btn-primary">Settings</button>
+            </div>
+        </div>
+
+        <div id="connected" class="section">
+            <div class="status-card success">
+                <h3>Connected</h3>
+                <p id="store-name">Your Store</p>
+            </div>
+
+            <div id="product-detected" class="section" style="display: none;">
+                <div class="product-card">
+                    <img id="product-image" src="" alt="Product" class="product-image">
+                    <div class="product-info">
+                        <h3 id="product-title">Product Title</h3>
+                        <p id="product-price" class="price">$0.00</p>
+                        <p id="product-description" class="description">Product description...</p>
+                    </div>
+                </div>
+
+                <div class="import-options">
+                    <label>
+                        <input type="checkbox" id="import-images" checked>
+                        Import images
+                    </label>
+                    <label>
+                        <input type="checkbox" id="import-description" checked>
+                        Import description
+                    </label>
+                    <label>
+                        <input type="checkbox" id="auto-publish">
+                        Auto-publish product
+                    </label>
+                </div>
+
+                <div class="markup-section">
+                    <label for="markup-percent">Price markup (%):</label>
+                    <input type="number" id="markup-percent" value="50" min="0" max="500">
+                    <p class="final-price">Final price: <span id="final-price">$0.00</span></p>
+                </div>
+
+                <button id="import-product" class="btn btn-primary btn-full">
+                    Import Product
+                </button>
+            </div>
+
+            <div id="no-product" class="section">
+                <div class="info-card">
+                    <h3>No Product Detected</h3>
+                    <p>Navigate to a product page on any e-commerce site to import it.</p>
+                    
+                    <div class="supported-sites">
+                        <h4>Supported Sites:</h4>
+                        <ul>
+                            <li>Amazon</li>
+                            <li>AliExpress</li>
+                            <li>eBay</li>
+                            <li>Shopify stores</li>
+                            <li>WooCommerce stores</li>
+                            <li>BigCommerce stores</li>
+                            <li>And many more...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="importing" class="section" style="display: none;">
+                <div class="importing-card">
+                    <div class="spinner"></div>
+                    <h3>Importing Product...</h3>
+                    <p id="import-status">Processing product data...</p>
+                    <div class="progress-bar">
+                        <div id="progress" class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="import-success" class="section" style="display: none;">
+                <div class="status-card success">
+                    <h3>Import Successful!</h3>
+                    <p>Product has been added to your store.</p>
+                    <div class="action-buttons">
+                        <button id="view-product" class="btn btn-secondary">View Product</button>
+                        <button id="import-another" class="btn btn-primary">Import Another</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="import-error" class="section" style="display: none;">
+                <div class="status-card error">
+                    <h3>Import Failed</h3>
+                    <p id="error-message">An error occurred during import.</p>
+                    <button id="retry-import" class="btn btn-primary">Retry</button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="quick-actions">
+                <button id="refresh-page" class="btn btn-small">Refresh</button>
+                <button id="open-dashboard" class="btn btn-small">Dashboard</button>
+                <button id="open-settings-footer" class="btn btn-small">Settings</button>
+            </div>
+            
+            <div class="stats">
+                <span id="products-imported">0 products imported today</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
