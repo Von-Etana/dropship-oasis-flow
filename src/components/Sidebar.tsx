@@ -11,8 +11,8 @@ import {
   Store,
   Paintbrush,
   Settings,
-  Shield,
-  Globe
+  Globe,
+  CreditCard
 } from 'lucide-react';
 
 interface NavItemProps {
@@ -31,11 +31,11 @@ const Sidebar = () => {
     { name: 'Orders', href: '/orders', icon: ShoppingCart },
     { name: 'Fulfillment', href: '/fulfillment', icon: Truck },
     { name: 'Analytics', href: '/analytics', icon: BarChart },
+    { name: 'Payment Dashboard', href: '/payments', icon: CreditCard },
     { name: 'Stores', href: '/stores', icon: Store },
     { name: 'Store Builder', href: '/store-builder', icon: Paintbrush },
     { name: 'Storefront Demo', href: '/storefront', icon: Globe },
     { name: 'Settings', href: '/settings', icon: Settings },
-    { name: 'Admin Panel', href: '/admin', icon: Shield },
   ];
 
   return (

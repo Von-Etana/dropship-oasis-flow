@@ -18,7 +18,7 @@ import Fulfillment from "./pages/Fulfillment";
 import Analytics from "./pages/Analytics";
 import Stores from "./pages/Stores";
 import Settings from "./pages/Settings";
-import AdminPanel from "./pages/AdminPanel";
+import PaymentDashboard from "./pages/PaymentDashboard";
 import StoreBuilder from "./pages/StoreBuilder";
 import Storefront from "./pages/Storefront";
 import NotFound from "./pages/NotFound";
@@ -46,8 +46,8 @@ const App = () => (
             <Route path="/stores" element={<Layout><Stores /></Layout>} />
             <Route path="/store-builder" element={<Layout><StoreBuilder /></Layout>} />
             <Route path="/storefront" element={<Layout><Storefront /></Layout>} />
+            <Route path="/payments" element={<Layout><PaymentDashboard /></Layout>} />
             <Route path="/settings" element={<Layout><Settings /></Layout>} />
-            <Route path="/admin" element={<Layout><AdminPanel /></Layout>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
