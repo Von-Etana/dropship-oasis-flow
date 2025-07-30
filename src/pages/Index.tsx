@@ -1,9 +1,9 @@
 
-// This file is now handled by Dashboard.tsx - redirect is handled in App.tsx
-import Dashboard from './Dashboard';
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 
 const Index = () => {
-  return <Dashboard />;
+  return <Navigate to="/dashboard" replace />;
 };
 
 export default Index;
